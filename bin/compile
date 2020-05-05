@@ -518,19 +518,33 @@ case "${TOOL}" in
         handleDefaultPkgSpec
         massagePkgSpecForVendor
 
-        unset GIT_DIR # unset git dir or it will mess with goinstall
+        env
+        pwd
+        uname -a
+
         if [[ -f bin/go-pre-compile ]]; then
             step "Running bin/go-pre-compile hook"
             chmod a+x bin/go-pre-compile
             bin/go-pre-compile
         fi
+        if [[ -f scripts/go-pre-compile ]]; then
+            step "Running scripts/go-pre-compile hook"
+            chmod a+x scripts/go-pre-compile
+            scripts/go-pre-compile
+        fi
 
+        unset GIT_DIR # unset git dir or it will mess with goinstall
         installPkgs
 
         if [[ -f bin/go-post-compile ]]; then
             step "Running bin/go-post-compile hook"
             chmod a+x bin/go-post-compile
             bin/go-post-compile
+        fi
+        if [[ -f scripts/go-post-compile ]]; then
+            step "Running scripts/go-post-compile hook"
+            chmod a+x scripts/go-post-compile
+            scripts/go-post-compile
         fi
     ;;
     dep)
